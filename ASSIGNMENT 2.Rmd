@@ -1,0 +1,80 @@
+---
+title: "ANA 515, Assignment"
+author: "Michael Fernando Tagore"
+date: '2022-06-19'
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r description, include = FALSE}
+#Description of the data
+#The data measures a group of drivers in purchasing fuel. It was collected from a sample of drivers in Arizona from 1/1/22 to 5/31/22. The fuel data set contains the day of purchase, net cost, number of gallons, and type of fuel. After completing the explanatory data analysis, I would like to know when is the biggest purchase occur, from Monday to Sunday. Also, to see if there is an additional effect in drivers behavior after a sudden increased in price per gallon.
+```
+
+```{r fuel_datasets, include = TRUE}
+library(readxl)
+#Section 2
+#Reading the data into R
+
+fuel_datasets = read.csv("https://raw.githubusercontent.com/michaelft/ANA-515_Assignment-2/master/Fuel Datasets, Assignment 2.csv")
+
+library(tidyverse)
+fuel_datasets_2 = fuel_datasets %>% drop_na (Transaction.Date,Units,Unit.Cost,Net.Cost,Product.Description,Merchant.Name,Merchant.City,Merchant.State...Province)
+```
+
+```{r clean, include = TRUE}
+#Section 3
+#Clean the data
+
+FUEL <- fuel_datasets_2
+
+FUEL = rename(FUEL, "Price per Gallon"="Unit.Cost")
+FUEL = rename(FUEL, "# of Gallons"="Units")
+
+NEW_FUEL <- subset(FUEL, select = -c(6))
+```
+
+
+This dataframe has 'r nrow(NEW_FUEL)' rows and 'rncol(NEW_FUEL)' columns. The names of the columns and a brief description of each are in the table below:
+
+```{r Character, include = TRUE}
+#Section 4
+#Characteristics of the data
+
+library(knitr)
+
+knitr::kable(head(NEW_FUEL[,1:7]),"pipe")
+
+text_fuel <-data.frame(
+  Names = c("Transaction Date","Gallons Purchased","PPG","Net Cost","Product Category","City","State"),
+  Description = c("Purchased Date", "Number of Gallons Purchased", "Average Price per Gallon","Total Cost per Transaction","Fuel Type","City","State")
+)
+text_fuel
+```
+
+```{r Summary, include = TRUE}
+#Section 5
+#Summary Statistics 5
+
+
+subset = NEW_FUEL[,c('Transaction.Date','Net.Cost','# of Gallons')]
+subset
+
+sum(is.na((subset$Net.Cost)))
+sum(is.na((subset$`Price per Gallon`)))
+sum(is.na((subset$`# of Gallons`)))
+
+result <- summary(subset)
+result
+
+```
+
+
